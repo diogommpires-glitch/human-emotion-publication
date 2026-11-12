@@ -1,0 +1,57 @@
+__pycache__/
+*.py[cod]
+server.log
+.venv/
+venv/
+.cache/
+.refine/
+.local/
+.hallmark/
+.worktrees/
+node_modules/
+playwright-report/
+test-results/
+htmlcov/
+.coverage
+.pytest_cache/
+.ruff_cache/
+.desloppify/
+data/
+memory/human-emotion-memory-*.json
+
+# Personal or research imaging data should never be committed with the app.
+*.dcm
+*.nii
+*.nii.gz
+*.mgz
+*.mgh
+*.nrrd
+*.edf
+*.bdf
+*.set
+*.fif
+
+# Keep local people data and photos private; only commit the empty template/docs.
+memory/people/
+memory/photos/
+*.jpg
+*.jpeg
+*.png
+*.webp
+*.heic
+
+# kept from the earlier privacy review
+/memory/*
+!/memory/README.txt
+!/memory/person-template.json
+human-emotion-memory-*.json
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Property-test caches can contain local source paths.
+.hypothesis/

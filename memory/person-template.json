@@ -1,0 +1,10 @@
+{
+  "name": "Person name or nickname",
+  "relationship": "friend / family / colleague / other",
+  "meaning": "What this person means to the simulator's remembered context",
+  "trust": 0.5,
+  "closeness": 0.5,
+  "valence": 0.0,
+  "notes": "Optional manually written memories or boundaries",
+  "photoDataUrl": null
+}

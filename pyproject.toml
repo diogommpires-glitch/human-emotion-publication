@@ -1,0 +1,68 @@
+[project]
+license = "PolyForm-Noncommercial-1.0.0"
+name = "human-emotion"
+version = "6.0.0"
+description = "Local spiking-network simulator with replayable learning experiments"
+requires-python = ">=3.14,<3.15"
+dependencies = ["numpy==2.5.4", "safetensors==0.8.0"]
+
+[project.optional-dependencies]
+cpu = ["torch==2.11.0"]
+cuda = ["torch==2.11.0+cu128"]
+research = [
+  "scipy==1.18.1", "scikit-learn==1.9.1", "mne==1.13.2",
+  "mne-bids==0.20.0", "nibabel==5.4.2", "nilearn==0.14.1",
+  "imageio[ffmpeg]==2.38.1", "pandas==3.1.0",
+]
+
+[dependency-groups]
+dev = [
+  "uv==0.13.6", "pytest==9.2.0", "pytest-cov==7.1.0",
+  "hypothesis==6.170.14", "ruff==0.17.3", "complexipy==8.3.0",
+  "vulture==2.16", "refurb==2.3.1", "build==1.6.1",
+]
+
+[tool.uv]
+package = false
+conflicts = [[{ extra = "cpu" }, { extra = "cuda" }]]
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cpu", extra = "cpu" },
+  { index = "pytorch-cu128", extra = "cuda" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = ["slow: full-network integration", "gpu: requires CUDA"]
+filterwarnings = ["ignore:Sparse CSR tensor support is in beta:UserWarning"]
+
+[tool.coverage.run]
+source = ["brain_model", "research", "server"]
+
+[tool.ruff]
+target-version = "py314"
+line-length = 100
+extend-exclude = [".worktrees", ".refine", ".local", "data"]
+
+[tool.ruff.lint]
+extend-select = ["I", "B", "SIM", "UP", "FURB", "PERF", "C4", "RET", "RUF"]
+
+[tool.pyright]
+typeCheckingMode = "basic"
+pythonVersion = "3.14"
+venvPath = "."
+venv = ".venv"
+include = ["brain_model", "research", "server.py", "benchmark.py"]
+exclude = [".worktrees", ".refine", ".local", "data"]

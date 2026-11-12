@@ -1,0 +1,26 @@
+name: checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  cpu:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      PYTHONUTF8: '1'
+      HUMAN_EMOTION_DEVICE: cpu
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: '0.13.6'
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '26.2.0'
+          cache: npm
+      - run: uv sync --locked --extra cpu --extra research --dev
+      - run: npm ci --ignore-scripts
+      - run: uv run --no-sync python tools/check.py --coverage
+      - run: node node_modules/knip/bin/knip.js --no-progress

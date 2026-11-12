@@ -1,0 +1,1 @@
+{"schema_version":1,"protocol":"fmri","seed":11,"neurons":256,"chunk_seconds":1.0,"source_path":".local/cohorts/fmri/cohort.json","bootstrap_iterations":10000,"permutation_iterations":1000}

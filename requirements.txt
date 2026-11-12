@@ -1,0 +1,7 @@
+# Compatibility installer for Python 3.14. Prefer uv sync --locked from README.md.
+# NVIDIA RTX 50-series requires the CUDA 12.8 build:
+#   python -m pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cu128
+# For CPU-only installations use uv sync --locked --extra cpu.
+numpy==2.5.4
+safetensors==0.8.0
+torch==2.11.0

@@ -1,0 +1,21 @@
+{
+  "name": "human-emotion",
+  "version": "6.0.0",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/memory.test.mjs tests/charts.test.mjs",
+    "lint": "biome check web tests --no-errors-on-unmatched",
+    "typecheck": "tsc --noEmit",
+    "test:browser": "playwright test tests/ui.spec.mjs tests/ui-live.spec.mjs --workers=1"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@biomejs/biome": "2.6.4",
+    "@playwright/test": "1.64.1",
+    "knip": "6.44.0",
+    "puppeteer-core": "25.16.0",
+    "pyright": "1.1.414",
+    "typescript": "7.0.2"
+  },
+  "license": "PolyForm-Noncommercial-1.0.0"
+}

@@ -1,0 +1,45 @@
+/* Hallmark · v2.0.0 · theme: Console · console: graphite · scope: app */
+/* Hallmark · pre-emit critique: palette and measured traces follow the instrument */
+:root {
+  color-scheme: dark;
+  --color-paper: #101417;
+  --color-paper-2: #191e23;
+  --color-paper-3: #0c1013;
+  --color-ink: #f1f3f4;
+  --color-ink-2: #d1d7dc;
+  --color-muted: #a9b3bc;
+  --color-rule: #343f48;
+  --color-rule-2: #778590;
+  --color-accent: #f2bf57;
+  --color-accent-ink: #221a0b;
+  --color-accent-soft: #3a3020;
+  --color-focus: var(--color-accent);
+  --color-cool: #91caef;
+  --color-cool-2: #c5e4f7;
+  --color-cool-soft: #223441;
+  --color-inhibitory: #a6b7d2;
+  --color-danger: #f4a39e;
+  --color-transparent: transparent;
+  --chemical-dopamine: #d9effb;
+  --chemical-noradrenaline: #91caef;
+  --chemical-serotonin: #a6b7d2;
+  --chemical-acetylcholine: #68acd8;
+  --chemical-oxytocin: #b9d8dc;
+  --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-body);
+  --font-outlier: var(--font-body);
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-title: 1.5rem;
+  --space-2xs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --radius-input: 6px;
+  --radius-panel: 10px;
+}

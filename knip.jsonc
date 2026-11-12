@@ -1,0 +1,7 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": ["web/app.js", "tests/check_memory_rename.js", "tests/*.mjs"],
+  "project": ["web/**/*.{js,mjs}", "tests/*.{js,mjs}"],
+  // Python tools/check.py invokes Pyright. The external Hallmark renderer uses Puppeteer.
+  "ignoreDependencies": ["pyright", "puppeteer-core"]
+}

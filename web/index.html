@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Local spiking-network simulation, learned sessions and reproducible experiments.">
+  <title>Human Emotion</title>
+  <link rel="stylesheet" href="styles.css?v=7">
+  <script src="app.js?v=7" type="module"></script>
+</head>
+<body>
+  <div class="page-shell" id="top">
+    <header class="topbar">
+      <a class="brand" href="#top">Human Emotion</a>
+      <span class="local-note">Runs on this computer</span>
+    </header>
+
+    <main>
+      <nav class="page-nav" aria-label="Main sections">
+        <a href="#simulation" aria-current="page">Simulation</a>
+        <a href="#sessions">Sessions</a>
+        <a href="#experiments">Experiments</a>
+        <a href="#memory">Memory</a>
+        <a href="#grounding">Model</a>
+      </nav>
+      <div class="workspace-title"><h1 id="page-title">Simulation</h1><p>Local spiking network. Exploratory model, not a clinical assessment.</p></div>
+      <section id="simulation" class="layout section-anchor destination" aria-label="Emotion simulation">
+        <div class="input-column">
+          <section class="panel input-panel">
+            <div class="section-heading">
+              <h2>Stimulus</h2><button id="run-button" class="primary-button" type="button" disabled><span>Run simulation</span></button>
+            </div><p id="run-status" class="run-status" role="status" aria-live="polite"></p>
+
+            <details class="context-controls"><summary>Situation note and social cue</summary>            <label class="field-label" for="event-text">Situation note <span class="optional">optional</span></label>
+            <textarea id="event-text" rows="3" maxlength="500" placeholder="A note to keep with this episode"></textarea>
+            <div class="field-foot">
+              <span>Note saved only in browser memory; not an input to the network.</span>
+              <span id="char-count">0 / 500</span>
+            </div>
+
+            <div class="select-row">
+              <label class="field-label" for="person-select">Person involved <span class="optional">optional</span></label>
+              <select id="person-select"><option value="">No person selected</option></select>
+              <p id="person-context" class="micro-copy"></p>
+            </div>
+
+            </details>
+            <div class="rule"></div>
+            <div class="section-heading compact"><h3>Sensory input</h3></div>
+            <p class="micro-copy slider-intro">Stimulus: <span class="stimulus-on">2.5</span> s to <span class="stimulus-off">5</span> s.</p>
+            <div class="preset-row">
+              <button type="button" class="preset-button" data-preset="threat">Threat</button>
+              <button type="button" class="preset-button" data-preset="reward">Reward</button>
+              <button type="button" class="preset-button" data-preset="loss">Loss</button>
+              <button type="button" class="preset-button" data-preset="pain">Pain</button>
+              <button type="button" class="preset-button" data-preset="warm">Warm contact</button>
+              <button type="button" class="preset-button" data-preset="novel">Novelty</button>
+              <button type="button" class="preset-button" data-preset="clear">Clear</button>
+            </div>
+            <div id="sense-sliders" class="sliders"></div>
+
+            <details class="more-factors">
+              <summary>Body and mind state</summary>
+              <p class="micro-copy">Tonic inputs remain active for the whole run.</p>
+              <p class="detail-label">Body</p>
+              <div id="body-sliders" class="sliders"></div>
+              <p class="detail-label">Mind</p>
+              <div id="mind-sliders" class="sliders"></div>
+            </details>
+
+            <details class="select-row compute-row"><summary>Population and learning</summary>
+              <label class="field-label" for="model-size">Neural population</label>
+              <select id="model-size"></select>
+              <p id="hardware-status" class="micro-copy">Loading model information…</p>
+              <label class="field-label seed-label" for="seed-input">Random seed <span class="optional">optional</span></label>
+              <input id="seed-input" class="seed-input" type="number" min="0" max="2147483647" step="1" placeholder="New seed each run">
+              <label class="field-label" for="learning-rule">Learning rule</label>
+              <select id="learning-rule"><option value="none">None</option><option value="pair_stdp">Pair STDP</option><option value="dopamine_eligibility">Dopamine eligibility (experimental)</option></select>
+              <label class="field-label" for="session-select">Weight state</label>
+              <select id="session-select"><option value="">Independent run</option></select>
+              <div id="session-run-controls" hidden>
+                <label class="field-label" for="session-revision">Start revision</label><input type="number" id="session-revision" min="0" step="1" value="0">
+                <label class="field-label" for="session-action">Session action</label>
+                <select id="session-action"><option value="learn">Learn and commit</option><option value="evaluate">Evaluate without learning</option><option value="replay">Replay without commit</option></select>
+              </div>
+            </details>
+
+
+          </section>
+        </div>
+
+        <div class="output-column">
+          <section id="results" class="panel results-panel" aria-live="polite">
+            <div class="section-heading"><h2>Response pattern</h2></div>
+            <div id="empty-result" class="empty-state"><h3>No run yet</h3><p>Set a stimulus and run the network to inspect spikes, chemical occupancy and field-potential proxies.</p></div>
+            <div id="result-content" hidden>
+              <div class="signal-summary" id="signal-summary"></div>
+
+              <div class="emotion-result">
+                
+                <h3 id="top-emotion">Not run</h3>
+                <p id="emotion-subtitle">Relative similarity within this model, not a probability.</p>
+                <div id="emotion-chips" class="emotion-chips"></div>
+              </div>
+
+              <div class="dimension-grid">
+                <div class="dimension"><div class="dimension-top"><span>Valence</span><b id="valence-value">Not run</b></div><div class="meter signed"><span id="valence-meter" class="meter-fill valence-fill"></span></div><div class="dimension-ends"><span>More unpleasant</span><span>More pleasant</span></div></div>
+                <div class="dimension"><div class="dimension-top"><span>Arousal</span><b id="arousal-value">Not run</b></div><div class="meter signed"><span id="arousal-meter" class="meter-fill arousal-fill"></span></div><div class="dimension-ends"><span>Calmer</span><span>More activated</span></div></div>
+                <div class="dimension"><div class="dimension-top"><span>Agency</span><b id="agency-value">Not run</b></div><div class="meter signed"><span id="agency-meter" class="meter-fill agency-fill"></span></div><div class="dimension-ends"><span>Less control</span><span>More control</span></div></div>
+                <div class="dimension"><div class="dimension-top"><span>Social safety</span><b id="safety-value">Not run</b></div><div class="meter signed"><span id="safety-meter" class="meter-fill safety-fill"></span></div><div class="dimension-ends"><span>Less safe</span><span>More safe</span></div></div>
+              </div>
+              <p class="signal-caption">Stimulus response relative to the pre-stimulus baseline; dimensionless model readouts.</p>
+
+              <div class="chart-block signal-block">
+                <div class="chart-heading">
+                  <h3>Neuron spikes</h3>
+                  <div class="chart-legend"><span><i class="legend-excitatory"></i>Glutamate cells</span><span><i class="legend-inhibitory"></i>GABA cells</span><span><i class="legend-stimulus"></i>Stimulus</span></div>
+                </div>
+                <p class="signal-caption">Sampled cells; one mark per spike. Summary count covers the full network.</p>
+                <canvas id="spike-raster" width="760" height="330" role="img" aria-label="Raster plot of simulated neuron spikes across brain regions"></canvas>
+              </div>
+
+              <div class="chart-block signal-block">
+                <div class="chart-heading"><h3>Chemical signals over time</h3><div id="chem-legend" class="chart-legend chem-legend"></div></div>
+                <p class="signal-caption">Target-region receptor occupancy, fixed scale 0 to 1. First second excluded as warm-up.</p>
+                <canvas id="chem-chart" width="760" height="170" role="img" aria-label="Neuromodulator receptor occupancy over time"></canvas>
+              </div>
+
+              <div class="chemistry-block">
+                <div class="chart-heading"><h3>Before and during the stimulus</h3></div>
+                <p class="signal-caption">Bars show the level during the stimulus; the tick marks the level just before it.</p>
+                <div id="chemistry-readout" class="chemistry-readout"></div>
+              </div>
+
+              <div class="chart-block signal-block">
+                <div class="chart-heading"><h3>EEG-like signals</h3><span id="eeg-scale" class="signal-unit">Arbitrary units</span></div>
+                <p class="signal-caption">Synaptic-current proxy under schematic electrodes, not scalp EEG. Shared amplitude scale; no clipped peaks.</p>
+                <canvas id="eeg-chart" width="760" height="205" role="img" aria-label="Synthetic EEG-like traces from the simulated network"></canvas>
+              </div>
+
+              <div class="chart-block signal-block">
+                <div class="chart-heading"><h3>Signal frequencies</h3><span id="peak-frequency" class="signal-unit"></span></div>
+                <p class="signal-caption">Relative power in the simulated signal, grouped into common frequency bands.</p>
+                <canvas id="eeg-spectrum" width="760" height="155" role="img" aria-label="Frequency spectrum of the synthetic EEG-like signal"></canvas>
+                <div class="spectrum-axis"><span>1 Hz</span><span>10 Hz</span><span>20 Hz</span><span>30 Hz</span><span>45 Hz</span></div>
+                <div id="eeg-bands" class="eeg-band-grid"></div>
+              </div>
+
+              <div class="interpretation"><h3>Why this pattern?</h3><p id="interpretation-text"></p></div>
+              <div class="region-block">
+                <div class="chart-heading"><h3>Firing before → during the stimulus</h3><button id="region-toggle" class="text-button" type="button" aria-expanded="false">Show all</button></div>
+                <div id="region-list" class="region-list"></div>
+              </div>
+              <p class="result-caveat" id="result-caveat"></p>
+              <button id="save-episode" class="secondary-button" type="button">Save episode</button>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section id="sessions" class="panel destination" aria-labelledby="sessions-heading">
+        <div class="section-heading"><h2 id="sessions-heading">Learned sessions</h2><button id="refresh-sessions" type="button">Refresh</button></div>
+        <p class="micro-copy">Weights persist between episodes. Neuron and chemical states reset. Browser notes and photos are excluded.</p>
+        <div class="toolbar"><button id="create-session" type="button" disabled class="primary-button">Create from controls</button><label class="import-label">Import session<input id="import-session" type="file" accept="application/zip,.zip"></label></div>
+        <p id="session-status" role="status">Loading sessions…</p>
+        <div class="table-wrap"><table><caption>Local session revisions</caption><thead><tr><th scope="col">Session</th><th scope="col">Revision</th><th scope="col">Cells</th><th scope="col">Rule</th><th scope="col">Actions</th></tr></thead><tbody id="session-list"></tbody></table></div>
+        <details id="session-detail"><summary>Revision history</summary><pre id="session-history">Select a session to inspect its revisions.</pre></details>
+      </section>
+      <section id="experiments" class="panel destination" aria-labelledby="experiments-heading">
+        <div class="section-heading"><h2 id="experiments-heading">Experiments</h2><button id="refresh-experiments" type="button">Refresh</button></div>
+        <p class="micro-copy">Local versioned manifests. One worker. Results appear only after computation.</p>
+        <form id="experiment-form"><label class="field-label" for="experiment-manifest">Experiment manifest (JSON)</label><textarea id="experiment-manifest" rows="8" spellcheck="false" required placeholder="Paste a versioned experiment manifest"></textarea><button type="submit" class="primary-button">Start experiment</button></form>
+        <p id="experiment-status" role="status">Loading experiments…</p><div id="experiment-list"></div>
+      </section>
+      <section id="memory" class="panel memory-panel section-anchor destination">
+        <div class="section-heading">
+          <div><h2>Browser memory</h2></div>
+          <span class="memory-count" id="memory-count">0 saved</span>
+        </div>
+        <p class="section-intro">Notes and photos stay in this browser. The model does not read notes or recognize faces. Trust, closeness and tone provide numeric social cues.</p><p id="memory-status" role="status"></p>
+
+        <form id="person-form" class="person-form">
+          <input id="person-edit-id" type="hidden">
+          <div class="form-two">
+            <label class="field-label">Name or nickname<input id="person-name" type="text" maxlength="80" placeholder="e.g. Sam" required></label>
+            <label class="field-label">Relationship <span class="optional">optional</span><input id="person-relationship" type="text" maxlength="60" placeholder="Friend, family, colleague"></label>
+          </div>
+          <label class="field-label">What does this person mean to you?<textarea id="person-meaning" rows="2" maxlength="500" placeholder="A note for your own memory" required></textarea></label>
+          <label class="field-label photo-label">Reference photo <span class="optional">optional, stored here only</span><input id="person-photo" class="file-input" type="file" accept="image/*"></label>
+          <div id="photo-preview-wrap" class="photo-preview-wrap" hidden><span id="photo-preview"></span><button id="remove-photo" class="text-button" type="button">Remove photo</button></div>
+          <div class="sliders person-sliders">
+            <label class="slider-row"><span><strong>Trust</strong></span><input id="person-trust" type="range" min="0" max="100" value="50"><output>50</output></label>
+            <label class="slider-row"><span><strong>Closeness</strong></span><input id="person-closeness" type="range" min="0" max="100" value="50"><output>50</output></label>
+            <label class="slider-row"><span><strong>Remembered tone</strong></span><input id="person-valence" type="range" min="0" max="100" value="50"><output>50</output></label>
+          </div>
+          <div class="form-actions"><button class="primary-button small" type="submit" id="save-person">Save person</button><button class="text-button" type="button" id="cancel-edit" hidden>Cancel</button></div>
+        </form>
+
+        <div class="memory-tools">
+          <h3>Saved people</h3>
+          <div class="backup-actions"><button id="export-memory" class="text-button" type="button">Export</button><label class="text-button import-label">Import<input id="import-memory" type="file" accept="application/json,.json"></label><button id="clear-memory" class="text-button danger-text" type="button">Clear all</button></div>
+        </div>
+        <div id="people-list" class="people-list"></div>
+
+        <div class="episode-heading"><h3>Saved episodes</h3><span id="episode-count" class="micro-copy">0 saved</span></div>
+        <div id="episodes-list" class="episodes-list"></div>
+        <p class="privacy-note">Saved data is local to this browser and is not encrypted. Exported backups may include photos.</p>
+      </section>
+
+      <section id="grounding" class="sources-section section-anchor destination">
+        <div class="section-heading"><div><h2>Model and scientific limits</h2><p class="section-subtitle">Exploratory dynamics from literature-inspired priors. Not a reconstruction of a person.</p></div></div>
+        <details><summary>Dataset references</summary><div class="dataset-list">
+          <article class="dataset-row">
+            <div><h3>Emotion regulation / OpenNeuro ds003823</h3><p>193 participants with T1 scans, emotion-regulation fMRI, physiology and self-reports across study sessions. A strong starting point for linking brain activity with reported experience.</p></div>
+            <a href="https://openneuro.org/datasets/ds003823" target="_blank" rel="noreferrer">Open dataset</a>
+          </article>
+          <article class="dataset-row">
+            <div><h3>Emo-FilM / OpenNeuro ds004892</h3><p>Brain scans during film clips, paired with timed emotion annotations in ds004872. Useful for studying changing responses to natural scenes.</p></div>
+            <div class="dataset-links"><a href="https://openneuro.org/datasets/ds004892" target="_blank" rel="noreferrer">Scans</a><a href="https://openneuro.org/datasets/ds004872" target="_blank" rel="noreferrer">Ratings</a></div>
+          </article>
+          <article class="dataset-row">
+            <div><h3>Human Connectome Project / Young Adult 2025</h3><p>Structural, diffusion and functional MRI; 1,071 processed participants. Its face-versus-shape task does not ask people to report their feelings. Access requires registration and data-use terms.</p></div>
+            <a href="https://hcp-db.humanconnectome.org/study/hcp-young-adult/document/hcp-young-adult-2025-release" target="_blank" rel="noreferrer">Release details</a>
+          </article>
+        </div>
+        </details>
+        <details class="model-limits">
+          <summary>What MRI can and cannot tell us</summary>
+          <div class="limit-copy">
+            <p>Structural imaging does not supply neuron-level parameters. Personal scans are not copied into the app or used to infer cell parameters.</p>
+            <p>The network has 21 regions (sensory thalamus and cortex, insula, basolateral amygdala threat and reward cells, central amygdala, BNST, hippocampus, three prefrontal areas, accumbens, habenula, hypothalamus, oxytocin cells, PAG, VTA, locus coeruleus, raphe, basal forebrain and brainstem output) with 16,384 to millions of adaptive spiking cells. Glutamate and GABA synapses have AMPA, NMDA, GABA-A and GABA-B receptors, short-term depression and conduction delays. Dopamine, noradrenaline, serotonin, acetylcholine and oxytocin are released in proportion to their source nuclei&rsquo;s firing, reach their target regions and change excitability through receptor occupancy. Region sizes, wiring strengths and receptor effects are literature-inspired priors, not measured from your scan. The EEG-like traces are a field-potential proxy, not scalp EEG. Network details are in <a href="/api/network">network.json</a>.</p>
+            <p>An anatomical MRI can help locate large structures, but it does not record neuron spikes or EEG. Functional recordings during a task would be needed to check the timing and size of the simulated responses.</p>
+            <ul>
+              <li><a href="https://docs.thevirtualbrain.org/tutorials/tutorial_1_BuildingYourOwnBrainNetworkModel.html" target="_blank" rel="noreferrer">TheVirtualBrain tutorial</a></li>
+              <li><a href="https://pubmed.ncbi.nlm.nih.gov/31931484/" target="_blank" rel="noreferrer">Review of tractography limitations</a></li>
+              <li><a href="https://docs.openneuro.org/user_guide.html" target="_blank" rel="noreferrer">OpenNeuro guide</a></li>
+              <li><a href="https://hcp-db.humanconnectome.org/study/hcp-young-adult/document/quick-reference-open-access-vs-restricted-data" target="_blank" rel="noreferrer">HCP open-data terms</a></li>
+            </ul>
+          </div>
+        </details>
+      </section>
+    </main>
+
+    <footer class="footer"><span>Local computation. Browser memory is unencrypted.</span><a href="#top">Back to top</a></footer>
+  </div>
+
+  <template id="person-card-template">
+    <article class="person-card"><div class="person-avatar"></div><div class="person-card-body"><div class="person-card-title"><h4>Saved record</h4><span class="relationship-pill"></span></div><p class="person-meaning"></p><div class="person-stats"></div></div><div class="person-actions"><button class="text-button edit-person" type="button">Edit</button><button class="text-button delete-person danger-text" type="button">Delete</button></div></article>
+  </template>
+  <template id="episode-template">
+    <article class="episode-card"><div class="episode-date"></div><div class="episode-body"><h4>Saved record</h4><p class="episode-person"></p><p class="episode-pattern"></p></div><button class="delete-episode text-button danger-text" type="button" aria-label="Delete saved episode">Delete</button></article>
+  </template>
+</body>
+</html>

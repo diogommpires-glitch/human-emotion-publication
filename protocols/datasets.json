@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "datasets": [
+    {"dataset":"ds005540","version":"1.0.7","license":"CC0","role":"EEG and within-participant valence/arousal ratings","metadata_url":"https://raw.githubusercontent.com/OpenNeuroDatasets/ds005540/1.0.7/dataset_description.json"},
+    {"dataset":"ds004892","version":"1.0.2","license":"CC0","role":"film scanner cohort; no invented paired film ratings","metadata_url":"https://raw.githubusercontent.com/OpenNeuroDatasets/ds004892/1.0.2/dataset_description.json"},
+    {"dataset":"ds004872","version":"1.0.3","license":"CC0","role":"separate film annotation cohort","metadata_url":"https://raw.githubusercontent.com/OpenNeuroDatasets/ds004872/1.0.3/dataset_description.json"}
+  ],
+  "seeds":[11,23,37,53,71],
+  "primary_seed":11,
+  "ridge_alphas":[0.01,0.1,1,10,100],
+  "eeg_band_edges_hz":[[1,4],[4,8],[8,13],[13,30],[30,45]],
+  "eeg_outer_folds":{"participants":5,"stimulus_families":3},
+  "film_outer_folds":{"participants":5,"stimuli":"leave_one_film_out"},
+  "primary_metrics":{"eeg":"MSE","fmri":"explained_variance","ratings":"MAE"},
+  "bootstrap_iterations":10000,
+  "temporal_permutations":1000,
+  "familywise_correction":"Holm across EEG, BOLD, ratings",
+  "fmriprep_image":"nipreps/fmriprep:25.2.7",
+  "whole_region_rois":["amygdala","hippocampus","insula"],
+  "media_policy":"Individual Creative Commons licence and source/content hashes required; dataset CC0 does not license third-party media."
+}

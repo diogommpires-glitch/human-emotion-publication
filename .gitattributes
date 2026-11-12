@@ -1,0 +1,6 @@
+# Biome checks these files as CRLF on every platform, including Linux CI.
+web/*.js text eol=crlf
+web/*.mjs text eol=crlf
+web/*.css text eol=crlf
+tests/*.mjs text eol=crlf
+*.cmd text eol=crlf
